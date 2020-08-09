@@ -5,6 +5,6 @@ import com.kata.car.domain.repositories.CarRepository
 
 class CreateCar(private val carRepository: CarRepository) {
     fun invoke(car: Car) {
-
+        carRepository.save(car)
     }
 }

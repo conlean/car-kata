@@ -3,9 +3,9 @@ package com.kata.car.domain.actions
 import com.kata.car.domain.entities.Car
 import com.kata.car.domain.entities.CarColor
 import com.kata.car.domain.repositories.CarRepository
-import com.kata.car.domain.repositories.InMemoryCarRepository
-import junit.framework.Assert.assertTrue
 import org.junit.Test
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.*
 
 
 class CreateCarTest {
@@ -18,29 +18,39 @@ class CreateCarTest {
     @Test
     fun `create a car successfully`(){
 
-        givenAnAction(InMemoryCarRepository(mutableMapOf(1L to car)))
+        givenACarRepository()
+        givenAnAction(carRepository)
 
         whenCreateCarIsInvoked(with = car)
 
-        // then
-        thenCountIs(value = 1)
+        thenCarIsCreated()
 
+    }
+
+    private fun givenACarRepository() {
+        carRepository = mock(CarRepository::class.java)
+        `when`(carRepository.count()).thenReturn(1)
     }
 
     @Test
     fun `create two cars successfully`(){
 
-        givenAnAction(InMemoryCarRepository())
+        givenACarRepository()
+        givenAnAction(carRepository)
 
         whenCreateCarIsInvoked(car)
         whenCreateCarIsInvoked(anotherCar)
 
-        thenCountIs(value = 2)
+        thenCarIsCreatedTwice()
 
     }
 
-    private fun thenCountIs(value: Int) {
-        assertTrue(carRepository.count() == value)
+    private fun thenCarIsCreatedTwice() {
+        verify(carRepository, times(2)).save(any())
+    }
+
+    private fun thenCarIsCreated() {
+        verify(carRepository, times(1)).save(car)
     }
 
     private fun whenCreateCarIsInvoked(with: Car) {
