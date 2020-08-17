@@ -1,22 +1,24 @@
-package com.kata.car.domain.actions
+package com.kata.car.core.actions
 
-import com.kata.car.domain.entities.Car
-import com.kata.car.domain.entities.CarColor
-import com.kata.car.domain.repositories.CarRepository
+import com.kata.car.core.domain.entities.Car
+import com.kata.car.core.domain.entities.CarColor
+import com.kata.car.core.domain.entities.CarId
+import com.kata.car.core.domain.repositories.CarRepository
+import com.kata.car.infra.repositories.InMemoryCarRepository
 import org.junit.Test
-import org.mockito.ArgumentMatchers.any
+
 import org.mockito.Mockito.*
 
 
 class CreateCarTest {
 
-    private val anotherCar = Car(color = CarColor("red"))
+    private val car = Car(color = CarColor("black"), id = CarId(1L))
+    private val anotherCar = Car(color = CarColor("red"), id = CarId(2L))
     private lateinit var carRepository: CarRepository
     private lateinit var createCarAction: CreateCar
-    private val car = Car(color = CarColor("black"))
 
     @Test
-    fun `create a car successfully`(){
+    fun `create a car successfully`() {
 
         givenACarRepository()
         givenAnAction(carRepository)
@@ -33,9 +35,9 @@ class CreateCarTest {
     }
 
     @Test
-    fun `create two cars successfully`(){
+    fun `create two cars successfully`() {
 
-        givenACarRepository()
+        givenAInMemoryCarRepository()
         givenAnAction(carRepository)
 
         whenCreateCarIsInvoked(car)
@@ -45,8 +47,12 @@ class CreateCarTest {
 
     }
 
+    private fun givenAInMemoryCarRepository() {
+        carRepository = InMemoryCarRepository()
+    }
+
     private fun thenCarIsCreatedTwice() {
-        verify(carRepository, times(2)).save(any())
+        assert(carRepository.count() == 2)
     }
 
     private fun thenCarIsCreated() {
@@ -54,7 +60,7 @@ class CreateCarTest {
     }
 
     private fun whenCreateCarIsInvoked(with: Car) {
-        createCarAction.invoke(car)
+        createCarAction.invoke(with)
     }
 
     private fun givenAnAction(carRepository: CarRepository) {

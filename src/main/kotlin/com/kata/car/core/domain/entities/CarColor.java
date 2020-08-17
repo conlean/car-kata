@@ -1,4 +1,4 @@
-package com.kata.car.domain.entities;
+package com.kata.car.core.domain.entities;
 
 public class CarColor {
 

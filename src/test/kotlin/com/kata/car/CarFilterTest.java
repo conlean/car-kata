@@ -1,8 +1,9 @@
 package com.kata.car;
 
-import com.kata.car.domain.CarFilter;
-import com.kata.car.domain.entities.Car;
-import com.kata.car.domain.entities.CarColor;
+import com.kata.car.core.domain.CarFilter;
+import com.kata.car.core.domain.entities.Car;
+import com.kata.car.core.domain.entities.CarColor;
+import com.kata.car.core.domain.entities.CarId;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -46,7 +47,7 @@ public class CarFilterTest {
     @Test
     public void mapTest() {
 
-        cars = Arrays.asList(new Car(carColorRed), new Car(carColorBlue), new Car(carColorBlack));
+        cars = Arrays.asList(new Car(new CarId(1L), carColorRed), new Car(new CarId(2L), carColorBlue), new Car(new CarId(3L), carColorBlack));
 
         List<String> carColors = cars.stream().map(car -> car.getColor().getColor()).collect(Collectors.toList());
 
@@ -56,7 +57,7 @@ public class CarFilterTest {
     @Test(expected = RuntimeException.class)
     public void carWithEmptyColor() {
         CarColor carColor = new CarColor("");
-        Car car = new Car(carColor);
+        Car car = new Car(new CarId(1L), carColor);
 
 
     }
@@ -66,7 +67,7 @@ public class CarFilterTest {
     }
 
     private void givenAListOfCars() {
-        cars = Arrays.asList(new Car(carColorBlack), new Car(carColorBlue), new Car(carColorRed));
+        cars = Arrays.asList(new Car(new CarId(1L), carColorBlack), new Car(new CarId(2L), carColorBlue), new Car(new CarId(3L), carColorRed));
     }
 
     private void whenFilterIsApplied() {
